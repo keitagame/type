@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>タイピングゲーム（直接入力）</title>
+  <style>
+    body {
+        background-image: url("https://keitagame.github.io/frank-community.github.io/k.jpg"); /* 画像のパス */
+      background-repeat: no-repeat;            /* 繰り返しをしない */
+      background-size: cover;                  /* 画面いっぱいに拡大縮小 */
+      background-position: center;   
+      font-family: sans-serif;
+      text-align: center;
+     
+        height:100vh;
+
+
+
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 2rem;
+    }
+    #word {
+        
+      font-size: 2em;
+      margin: 20px;
+      letter-spacing: 3px;
+    }
+    .typed {
+    
+      color: red;
+    }
+.board {
+    border:1px solid #333333;
+    border-bottom:2px solid #00ffdd;
+    margin:40px;
+      background: #000;
+      padding: 10px 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      text-align: center;
+    }
+    .station {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .label {
+      font-size: 1rem;
+      color: #aaa;
+    }
+    .next {
+      font-size: 1.8rem;
+      color: rgb(255, 255, 255); /* 緑で次駅を強調 */
+      margin-top: 6px;
+    }
+    .flip {
+      display: inline-block;
+      animation: flipIn .5s ease;
+    }
+    @keyframes flipIn {
+      0% { transform: rotateX(-90deg); opacity: 0; }
+      100% { transform: rotateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="board">
+    <div class="label">DO</div>
+    <div id="word"></div>
+    <div class="label">NEXT</div>
+    <div class="next flip" id="next"></div>
+  </div>
+  
+  <div id="score">スコア: 0</div>
+  <button id="startBtn">スタート</button>
+
+  <script>
+    const words = ["apple", "banana", "cherry", "grape", "orange"];
+    let currentWord = "";
+    let currentIndex = 0;
+    let score = 0;
+    let nextword = "";
+    const wordEl = document.getElementById("word");
+    const scoreEl = document.getElementById("score");
+    const startBtn = document.getElementById("startBtn");
+    const next = document.getElementById("next");
+    function pickWord() {
+      nextword = words[Math.floor(Math.random() * words.length)];
+      next.textContent = nextword;
+      currentIndex = 0;
+      renderWord();
+    }
+
+    function renderWord() {
+      let html = "";
+      for (let i = 0; i < currentWord.length; i++) {
+        if (i < currentIndex) {
+          html += `<span class="typed">${currentWord[i]}</span>`;
+        } else {
+          html += currentWord[i];
+        }
+      }
+      wordEl.innerHTML = html;
+    }
+
+    function startGame() {
+      score = 0;
+      currentWord = words[Math.floor(Math.random() * words.length)];
+      scoreEl.textContent = "スコア: " + score;
+      pickWord();
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (!currentWord) return;
+      const key = e.key;
+
+      // 入力が正しい場合
+      if (key === currentWord[currentIndex]) {
+        currentIndex++;
+        renderWord();
+
+        // 単語をすべて打ち終わったら
+        if (currentIndex === currentWord.length) {
+          score++;
+          scoreEl.textContent = "スコア: " + score;
+          currentWord = nextword;
+          pickWord();
+        }
+      }
+    });
+
+   startGame();
+  </script>
+</body>
+</html>
