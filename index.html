@@ -404,8 +404,20 @@ addtamas();
     
     input = "";
   } else if (/^[a-z]$/i.test(e.key)) {
-    input += e.key;
+    
   }
+  const expectedChar = currentWord[input.length];
+
+  // 一致したら追加、ミスなら何もしない（非表示・非反映）
+  if (e.key.toLowerCase() === expectedChar?.toLowerCase()) {
+    input += expectedChar; // 大文字/小文字扱いを統一
+  } else {
+    // ミス演出（短いフラッシュ）
+    missFlashUntil = performance.now() + 120;
+    // ここで効果音やバイブレーションなども可能
+    // navigator.vibrate?.(30);
+  }
+
   
 });
 Promise.all(textures.map(t => new Promise(res => t.onload = res))).then(init);
