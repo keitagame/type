@@ -20,6 +20,7 @@
 <body>
   <canvas id="canvas"></canvas>
   <script>
+let game = false;
 const textures = [
   'star1.png', // 小さめ
   'star2.png', // 中くらい
@@ -34,6 +35,8 @@ const textures = [
     ctx.imageSmoothingEnabled = false;
     const img = new Image();
     const star = new Image();
+    const title = new Image();
+    title.src="スペースタイピング.png"
     const stt = new Image();
     stt.src="starship2.png"
     const starship = new Image();
@@ -45,7 +48,7 @@ const textures = [
     let oy = 0;
     let input = "";
     let score = 0;
-    back.src="e.jpg";
+    back.src="a.jpeg";
     star.src="star1.png";
    const flakes = [];
 const FLAKE_COUNT = 10;        // 雪の量
@@ -88,7 +91,7 @@ function upstt(){
         }
 }
 function init() {
-  for (let i =0; i<flakes.length; i++){
+  for (let i =0; i<50; i++){
     
     flakes.push(spawnFlake(rand(0, canvas.height))); // 画面内に初期配置
   }
@@ -235,7 +238,9 @@ let tick = 0;
 function drawb(){
 ctx.drawImage(back, 0,0, canvas.width, canvas.height);
 }
-
+function drawtitle(){
+    ctx.drawImage(title, canvas.width/2-400,canvas.height/2-250, 800, 500);
+}
 let xi = 200;
   function drawst(){
 
@@ -360,7 +365,15 @@ function drawtama(){
       
     }
     function main(now) {
+if(!game){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawf();
+drawb();
+draws();
+drawtitle();
+}
 if(gameover){return;}
+if(game){
         ctx.clearRect(0,0,canvas.width,canvas.height);
       drawf();
 drawb();
@@ -386,6 +399,7 @@ upstt();
       currentWord = words[Math.floor(Math.random() * words.length)];
 input = "";
     }
+}
 	    requestAnimationFrame(main);
     }
     requestAnimationFrame(main);
@@ -401,7 +415,10 @@ addtamas();
   if (e.key === "Backspace") {
     input = input.slice(0, -1);
   } else if (e.key === "Enter") {
-    
+    if(!game){
+        game=true;
+        back.src="e.jpg";
+    }
     input = "";
   } else if (/^[a-z]$/i.test(e.key)) {
     
