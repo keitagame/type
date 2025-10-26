@@ -164,6 +164,7 @@ function drawfw(){
 
   
 }
+let tamas = [];
 let tick = 0;
 // 星画像（差し替え推奨）。同一オリジンかCORS許可が必要。
   const starImg = new Image();
@@ -234,6 +235,7 @@ let tick = 0;
 function drawb(){
 ctx.drawImage(back, 0,0, canvas.width, canvas.height);
 }
+
 let xi = 200;
   function drawst(){
 
@@ -250,6 +252,14 @@ if(stts[i].y >xi) {
 }
 console.log(xi);
 ctx.drawImage(starship, 200,xi, 200, 200);
+}
+function addtamas(){
+tamas.push({x:200,y:xi});
+}
+function uptamas(){
+for(var i = 0; i<tamas.length; i++){
+tamas[i].x+=30;
+}
 }
 function drawstt(){
 for(var i = 0; i < stts.length; i++){
@@ -332,7 +342,12 @@ function draws() {
 
   
 }
-
+function drawtama(){
+    ctx.fillStyle = "white";
+    for(var i =0; i<tamas.length; i++){
+      ctx.fillRect(tamas[i].x+200, tamas[i].y+100, 20, 6);
+}
+}
     function drawf() {
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -356,6 +371,8 @@ drawb();
   
 draws();
         drawo();
+drawtama();
+uptamas();
 drawst();
 drawstt();
 upstt();
@@ -379,7 +396,8 @@ const intervalId = setInterval(() => {
 }, inta);
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas(); // 初期化
-    document.addEventListener("keydown", (e) => {
+     document.addEventListener("keydown", (e) => {
+addtamas();
   if (e.key === "Backspace") {
     input = input.slice(0, -1);
   } else if (e.key === "Enter") {
