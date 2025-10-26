@@ -34,6 +34,10 @@ const textures = [
     ctx.imageSmoothingEnabled = false;
     const img = new Image();
     const star = new Image();
+    const stt = new Image();
+    stt.src="starship2.png"
+    const starship = new Image();
+    starship.src="starship.png";
     const back = new Image();
     let words = ["apple", "banana", "cherry", "grape", "orange"];
     let currentWord = words[Math.floor(Math.random() * words.length)];
@@ -51,7 +55,7 @@ const WIND_VARIATION = 0.6;     // 風の揺れ幅
 const DRIFT_FREQ = 0.0018;      // 横ゆらぎの周波数
 const ROT_SPEED = 0.01;         // 回転の速さ上限
 function rand(min, max) { return Math.random() * (max - min) + min; }
-
+let stts = [];
 function spawnFlake(y = rand(-canvas.height, 0)) {
   const tex = textures[Math.floor(Math.random() * textures.length)];
   const scale = rand(0.4, 1.2); // サイズばらつき
@@ -69,7 +73,15 @@ function spawnFlake(y = rand(-canvas.height, 0)) {
     driftPhase: rand(0, 1000)
   };
 }
-
+function addstt(){
+    stta = {x:canvas.width,y:rand(0, canvas.height)};
+    stts.push(stta);
+}
+function upstt(){
+    for(var i = 0; i < stts.length; i++){
+        stts[i].x-=6;
+        }
+}
 function init() {
   for (let i = 0; i < FLAKE_COUNT; i++) {
     flakes.push(spawnFlake(rand(0, canvas.height))); // 画面内に初期配置
@@ -216,8 +228,14 @@ let tick = 0;
 function drawb(){
 ctx.drawImage(back, 0,0, canvas.width, canvas.height);
 }
-  
-
+  function drawst(){
+ctx.drawImage(starship, 200,canvas.height/2, 200, 200);
+}
+function drawstt(){
+for(var i = 0; i < stts.length; i++){
+        ctx.drawImage(stt, stts[i].x,stts[i].y, 200, 200);
+        }
+}
   function update(dt) {
     // 生成
     spawnCarry += SPAWN_PER_SEC * dt;
@@ -273,6 +291,7 @@ function draws() {
 
     // 画面外処理（下に出たら上から再利用、横はラップ）
     if (f.y - f.h > canvas.height) {
+        
       const nf = spawnFlake(-rand(10, 200));
       nf.x = f.x % canvas.width;
       Object.assign(f, nf);
@@ -300,8 +319,7 @@ function draws() {
       t += 0.016;
 
   // Clear
-  ctx.fillStyle = COL_BG;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
 
  
       
@@ -310,18 +328,21 @@ function draws() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
       drawf();
 drawb();
- const dt = Math.min(0.05, (now - last) / 100); // 安定化
+ const dt = Math.min(0.05, (now - last) / 200); // 安定化
     last = now;
     update(dt);
     render(dt);
   
 draws();
         drawo();
-
+drawst();
+drawstt();
+upstt();
 	    //ここに繰り返したいものを書く
         drowm();
       //drawfw();
-
+        ctx.fillStyle = "#000000";
+      ctx.fillRect(0, canvas.height-150, canvas.width, canvas.height);
         if (input === currentWord) {
       score++;
       currentWord = words[Math.floor(Math.random() * words.length)];
@@ -330,6 +351,9 @@ input = "";
 	    requestAnimationFrame(main);
     }
     requestAnimationFrame(main);
+const intervalId = setInterval(() => {
+  addstt();
+}, 2000);
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas(); // 初期化
     document.addEventListener("keydown", (e) => {
